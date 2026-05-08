@@ -126,7 +126,7 @@ let saveTaskController = () => {
 };
 
 
-let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated) => {
+let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated, taskDueDate) => {
     $("#view_task_id").val(taskId);
     $("#view_task_name").html(taskName);
     $("#view_task_notes").html(taskNotes);
@@ -134,6 +134,7 @@ let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated
     $("#edit_taskname").val(taskName);
     $("#edit_tasknotes").val(taskNotes);
     $("#edit_taskpriority").val(taskPriority);
+    $("#edit_taskduedate").val(taskDueDate);
 
     let prioritylabel = "";
     if (taskPriority == "high") {
@@ -151,6 +152,21 @@ let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated
     let dateoptions = { year: 'numeric', month: 'long', day: 'numeric' };
     let formatteddate = dateobj.toLocaleDateString('en-US', dateoptions);
     $("#view_task_created").html("Created on " + formatteddate);
+
+    if (taskDueDate != null && taskDueDate != "" && taskDueDate != "null") {
+        let duedateobj = new Date(taskDueDate);
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let dueoptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        let formattedduedate = duedateobj.toLocaleDateString('en-US', dueoptions);
+        if (duedateobj < today) {
+            $("#view_task_duedate").html('<span style="color:#dc3545;">⚠️ Overdue — was due ' + formattedduedate + '</span>');
+        } else {
+            $("#view_task_duedate").html(formattedduedate);
+        }
+    } else {
+        $("#view_task_duedate").html('<span style="color:#aaa;">No due date set</span>');
+    }
 
     $(".content-wrapper").hide();
     $("#div-viewtask").show();
@@ -258,6 +274,7 @@ let taskListController = () => {
                 let tasknotes = task['tasknotes'];
                 let taskid = task['taskid'];
                 let createdts = task['createdts'];
+                let duedate = task['duedate'];
                 let priority = task['priority'];
                 let prioritybadge = "";
 
@@ -271,16 +288,31 @@ let taskListController = () => {
                     prioritybadge = '<span class="badge ms-2" style="background-color:#28a745; font-size:0.7em;">Low</span>';
                 }
 
+                let duedatebadge = "";
+                if (duedate != null && duedate != "") {
+                    let duedateobj = new Date(duedate);
+                    let today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (duedateobj < today) {
+                        duedatebadge = '<span class="badge ms-1" style="background-color:#dc3545; font-size:0.7em;">Overdue</span>';
+                    } else {
+                        let dueoptions = { month: 'short', day: 'numeric' };
+                        let duelabel = duedateobj.toLocaleDateString('en-US', dueoptions);
+                        duedatebadge = '<span class="badge ms-1" style="background-color:#6c757d; font-size:0.7em;">Due ' + duelabel + '</span>';
+                    }
+                }
+
                 let row = '<tr>' +
                     '<td class="align-middle" style="padding-left:12px;">' +
-                    taskname + prioritybadge +
+                    taskname + prioritybadge + duedatebadge +
                     '<button type="button" class="btn btn-sm options-btn float-end"' +
                     ' style="background:none; border:none; color:#008080; font-size:0.9em;"' +
                     ' data-taskid="' + taskid + '"' +
                     ' data-taskname="' + taskname + '"' +
                     ' data-tasknotes="' + tasknotes + '"' +
                     ' data-priority="' + priority + '"' +
-                    ' data-createdts="' + createdts + '">' +
+                    ' data-createdts="' + createdts + '"' +
+                    ' data-duedate="' + duedate + '">' +
                     '<i class="fa fa-sliders"></i> Options</button>' +
                     '</td>' +
                 '</tr>';
@@ -294,7 +326,8 @@ let taskListController = () => {
                 let tasknotes = $(this).data('tasknotes');
                 let priority = $(this).data('priority');
                 let createdts = $(this).data('createdts');
-                viewTaskController(taskid, taskname, tasknotes, priority, createdts);
+                let duedate = $(this).data('duedate');
+                viewTaskController(taskid, taskname, tasknotes, priority, createdts, duedate);
             });
         },
         "error": (data) => {
