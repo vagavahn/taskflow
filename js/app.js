@@ -192,6 +192,8 @@ let taskListController = () => {
 
             $("#table_header").show();
 
+            $("#task-search").val("");
+
             for (let i = 0; i < results.length; i++) {
                 let task = results[i];
                 let taskname = task['taskname'];
@@ -687,6 +689,21 @@ if (localStorage.token){
         let deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
         deleteModal.hide();
         deleteTaskController();
+    });
+
+    /* what happens if the task search input changes */
+    $('#task-search').on('input', () => {
+        let searchterm = $("#task-search").val();
+        searchterm = searchterm.toLowerCase();
+        $('#tasks_table_body tr').each( function() {
+            let tasktext = $(this).text();
+            tasktext = tasktext.toLowerCase();
+            if (tasktext.indexOf(searchterm) === -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
     });
 
 }); /* end the document ready event*/
