@@ -199,13 +199,14 @@ let taskListController = () => {
                 let taskid = task['taskid'];
 
                 let row = '<tr>' +
-                    '<td class="text-center align-middle">' + taskname + 
-                    '&nbsp;&nbsp;<button type="button" class="btn btn-sm options-btn"' +
-                    ' style="background:none; border:none; color:#008080; font-size:1.1em;"' +
+                    '<td class="align-middle" style="padding-left:12px;">' + 
+                    taskname + 
+                    '<button type="button" class="btn btn-sm options-btn float-end"' +
+                    ' style="background:none; border:none; color:#008080; font-size:0.9em;"' +
                     ' data-taskid="' + taskid + '"' +
                     ' data-taskname="' + taskname + '"' +
                     ' data-tasknotes="' + tasknotes + '">' +
-                    '<i class="fa fa-sliders"></i></button>' +
+                    '<i class="fa fa-sliders"></i> Options</button>' +
                     '</td>' +
                 '</tr>';
 
