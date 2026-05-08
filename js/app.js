@@ -526,7 +526,10 @@ if (localStorage.token){
 
     /* what happens if the delete task button is clicked */
     $('#btnDeleteTask').click( () => {
-        deleteTaskController();
+        let taskname = $("#view_task_name").html();
+        $("#delete-task-name-display").html(taskname);
+        let deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        deleteModal.show();
     });
 
     /* what happens if the cancel button is clicked in add task */
@@ -677,6 +680,13 @@ if (localStorage.token){
     $('#btnCancelPassword').click(() => {
         $(".content-wrapper").hide();
         $("#div-tasks").show();
+    });
+
+    /* what happens if the confirm delete button is clicked */
+    $('#btnConfirmDelete').click( () => {
+        let deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+        deleteModal.hide();
+        deleteTaskController();
     });
 
 }); /* end the document ready event*/

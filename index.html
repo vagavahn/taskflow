@@ -483,5 +483,46 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="deleteConfirmModal" 
+         tabindex="-1" aria-labelledby="deleteConfirmLabel" 
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="deleteConfirmLabel">
+                        <i class="fa fa-trash text-danger"></i> 
+                        Delete Task?
+                    </h5>
+                    <button type="button" class="btn-close" 
+                            data-bs-dismiss="modal" 
+                            aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete 
+                    "<strong id="delete-task-name-display"></strong>"?
+                    </p>
+                    <p class="text-muted" style="font-size:0.85em;">
+                        This cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" 
+                            class="btn btn-secondary btn-sm" 
+                            data-bs-dismiss="modal"
+                            style="min-width:80px;">
+                        Cancel
+                    </button>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm" 
+                            id="btnConfirmDelete"
+                            style="min-width:100px;">
+                        <i class="fa fa-trash"></i> Delete Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
