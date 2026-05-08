@@ -558,6 +558,18 @@ if (localStorage.token){
         $('#div-tasks').show();
     });
 
+    /* what happens if the cancel task2 button is clicked */
+    $('#btnCancelTask2').click(() => {
+        $(".content-wrapper").hide();
+        $("#div-tasks").show();
+    });
+
+    /* what happens if the cancel edit2 button is clicked */
+    $('#btnCancelEdit2').click(() => {
+        $(".content-wrapper").hide();
+        $("#div-tasks").show();
+    });
+
     /* what happens if the show signup button is clicked */
     $('#btnShowSignup').click( () => {
         $(".content-wrapper").hide();

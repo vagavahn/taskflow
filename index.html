@@ -230,53 +230,119 @@
 
         </div>
 
-        <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-addtask" style="display: none;">
-            <h2>Add Task</h2>
-    
-            <form id="form-addtask">
+        <div class="col-12 col-md-8 mx-auto content-wrapper" 
+             id="div-addtask" style="display: none;">
+
+            <a href="#" id="btnCancelTask" 
+               style="color:#008080; text-decoration:none; 
+                      font-size:0.9em;">
+                <i class="fa fa-arrow-left"></i> Back to Task Board
+            </a>
+
+            <hr>
+
+            <h4 style="font-weight:600; margin-bottom:20px;">
+                <i class="fa fa-plus"></i> Add Task
+            </h4>
+
+            <form id="form-addtask" style="max-width:500px;">
                 <input type="hidden" name="token" id="formaddtasktoken" value="">
-                <label for="taskname">Task:</label>
-                <input type="text" name="taskname" id="taskname" class="form-control">
-                <label for="tasknotes">Task Notes:</label>
-                <input type="text" name="tasknotes" id="tasknotes" class="form-control">
+                
+                <div class="mb-3">
+                    <label for="taskname" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Task
+                    </label>
+                    <input type="text" name="taskname" id="taskname" 
+                           class="form-control" 
+                           placeholder="What needs to be done?">
+                </div>
+
+                <div class="mb-4">
+                    <label for="tasknotes" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Notes
+                    </label>
+                    <textarea name="tasknotes" id="tasknotes" 
+                              class="form-control" rows="3" 
+                              placeholder="Add any details or notes..."></textarea>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <input type="button" value="Cancel" 
+                           id="btnCancelTask2" 
+                           class="btn btn-secondary btn-sm" 
+                           style="min-width:80px;">
+                    <input type="button" value="Save Task" 
+                           id="btnSaveTask" 
+                           class="btn btn-primary btn-sm" 
+                           style="min-width:100px;">
+                </div>
+
             </form>
 
-            <br>
-            <div class="text-center">
-                <input type="button" value="Save Task" id="btnSaveTask" class="btn btn-primary" style="font-size:2em;width:100%;">
-            </div>
-            <br>
-            <div class="text-center">
-                <input type="button" value="Cancel" id="btnCancelTask" class="btn btn-secondary" style="font-size:2em;width:100%;">
-            </div>
-            <br>
-            <div id='addtask_message' class="">
-            </div>
+            <div id='addtask_message' class="mt-3"></div>
         </div>
 
-        <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-edittask" style="display: none;">
-            <h2>Edit Task</h2>
-    
-            <form id="form-edittask">
+        <div class="col-12 col-md-8 mx-auto content-wrapper" 
+             id="div-edittask" style="display: none;">
+
+            <a href="#" id="btnCancelEdit" 
+               style="color:#008080; text-decoration:none; 
+                      font-size:0.9em;">
+                <i class="fa fa-arrow-left"></i> Back to Task Board
+            </a>
+
+            <hr>
+
+            <h4 style="font-weight:600; margin-bottom:20px;">
+                <i class="fa fa-edit"></i> Edit Task
+            </h4>
+
+            <form id="form-edittask" style="max-width:500px;">
                 <input type="hidden" name="token" id="edit_token" value="">
                 <input type="hidden" name="taskid" id="edit_task_id" value="">
-                <label for="edit_taskname">Task:</label>
-                <input type="text" name="taskname" id="edit_taskname" class="form-control">
-                <label for="edit_tasknotes">Task Notes:</label>
-                <input type="text" name="tasknotes" id="edit_tasknotes" class="form-control">
+
+                <div class="mb-3">
+                    <label for="edit_taskname" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Task
+                    </label>
+                    <input type="text" name="taskname" id="edit_taskname" 
+                           class="form-control">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit_tasknotes" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Notes
+                    </label>
+                    <textarea name="tasknotes" id="edit_tasknotes" 
+                              class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <input type="button" value="Cancel" 
+                           id="btnCancelEdit2" 
+                           class="btn btn-secondary btn-sm" 
+                           style="min-width:80px;">
+                    <input type="button" value="Save Changes" 
+                           id="btnSaveEdit" 
+                           class="btn btn-primary btn-sm" 
+                           style="min-width:120px;">
+                </div>
+
             </form>
 
-            <br>
-            <div class="text-center">
-                <input type="button" value="Save Changes" id="btnSaveEdit" class="btn btn-primary" style="font-size:2em;width:100%;">
-            </div>
-            <br>
-            <div class="text-center">
-                <input type="button" value="Cancel" id="btnCancelEdit" class="btn btn-secondary" style="font-size:2em;width:100%;">
-            </div>
-            <br>
-            <div id='edittask_message' class="">
-            </div>
+            <div id='edittask_message' class="mt-3"></div>
         </div>
 
         <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-editprofile" style="display: none;">
