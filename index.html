@@ -317,6 +317,21 @@
                     <label style="font-weight:500; font-size:0.9em; 
                                   color:#888; text-transform:uppercase; 
                                   letter-spacing:0.05em;">
+                        Status
+                    </label>
+                    <p id="view_task_status" 
+                       style="font-size:1em; 
+                              margin-top:4px;
+                              margin-bottom:0;">
+                    </p>
+                </div>
+
+                <hr style="border-color:#e0e0e0;">
+
+                <div class="mb-3">
+                    <label style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
                         Due Date
                     </label>
                     <p id="view_task_duedate" 
@@ -452,6 +467,21 @@
                            class="form-control">
                 </div>
 
+                <div class="mb-4">
+                    <label for="taskstatus" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Status
+                    </label>
+                    <select name="status" id="taskstatus" 
+                            class="form-select">
+                        <option value="pending" selected>⏳ Pending</option>
+                        <option value="in-progress">🔄 In Progress</option>
+                        <option value="complete">✅ Complete</option>
+                    </select>
+                </div>
+
                 <div class="d-flex gap-2 justify-content-end">
                     <input type="button" value="Cancel" 
                            id="btnCancelTask2" 
@@ -534,6 +564,21 @@
                     <input type="date" name="duedate" 
                            id="edit_taskduedate" 
                            class="form-control">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit_taskstatus" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Status
+                    </label>
+                    <select name="status" id="edit_taskstatus" 
+                            class="form-select">
+                        <option value="pending">⏳ Pending</option>
+                        <option value="in-progress">🔄 In Progress</option>
+                        <option value="complete">✅ Complete</option>
+                    </select>
                 </div>
 
                 <div class="d-flex gap-2 justify-content-end">

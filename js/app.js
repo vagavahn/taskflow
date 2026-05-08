@@ -126,7 +126,7 @@ let saveTaskController = () => {
 };
 
 
-let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated, taskDueDate) => {
+let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated, taskDueDate, taskStatus) => {
     $("#view_task_id").val(taskId);
     $("#view_task_name").html(taskName);
     $("#view_task_notes").html(taskNotes);
@@ -135,6 +135,7 @@ let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated
     $("#edit_tasknotes").val(taskNotes);
     $("#edit_taskpriority").val(taskPriority);
     $("#edit_taskduedate").val(taskDueDate);
+    $("#edit_taskstatus").val(taskStatus);
 
     let prioritylabel = "";
     if (taskPriority == "high") {
@@ -147,6 +148,18 @@ let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated
         prioritylabel = '<span class="badge" style="background-color:#28a745;">🟢 Low</span>';
     }
     $("#view_task_priority").html(prioritylabel);
+
+    let statuslabel = "";
+    if (taskStatus == "complete") {
+        statuslabel = '<span class="badge" style="background-color:#28a745;">✅ Complete</span>';
+    }
+    if (taskStatus == "in-progress") {
+        statuslabel = '<span class="badge" style="background-color:#17a2b8;">🔄 In Progress</span>';
+    }
+    if (taskStatus == "pending") {
+        statuslabel = '<span class="badge" style="background-color:#6c757d;">⏳ Pending</span>';
+    }
+    $("#view_task_status").html(statuslabel);
 
     let dateobj = new Date(taskCreated);
     let dateoptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -275,6 +288,7 @@ let taskListController = () => {
                 let taskid = task['taskid'];
                 let createdts = task['createdts'];
                 let duedate = task['duedate'];
+                let status = task['status'];
                 let priority = task['priority'];
                 let prioritybadge = "";
 
@@ -302,9 +316,20 @@ let taskListController = () => {
                     }
                 }
 
+                let statusbadge = "";
+                if (status == "complete") {
+                    statusbadge = '<span class="badge ms-1" style="background-color:#28a745; font-size:0.7em;">✅ Complete</span>';
+                }
+                if (status == "in-progress") {
+                    statusbadge = '<span class="badge ms-1" style="background-color:#17a2b8; font-size:0.7em;">🔄 In Progress</span>';
+                }
+                if (status == "pending") {
+                    statusbadge = '<span class="badge ms-1" style="background-color:#6c757d; font-size:0.7em;">⏳ Pending</span>';
+                }
+
                 let row = '<tr>' +
                     '<td class="align-middle" style="padding-left:12px;">' +
-                    taskname + prioritybadge + duedatebadge +
+                    taskname + prioritybadge + duedatebadge + statusbadge +
                     '<button type="button" class="btn btn-sm options-btn float-end"' +
                     ' style="background:none; border:none; color:#008080; font-size:0.9em;"' +
                     ' data-taskid="' + taskid + '"' +
@@ -312,7 +337,8 @@ let taskListController = () => {
                     ' data-tasknotes="' + tasknotes + '"' +
                     ' data-priority="' + priority + '"' +
                     ' data-createdts="' + createdts + '"' +
-                    ' data-duedate="' + duedate + '">' +
+                    ' data-duedate="' + duedate + '"' +
+                    ' data-status="' + status + '">' +
                     '<i class="fa fa-sliders"></i> Options</button>' +
                     '</td>' +
                 '</tr>';
@@ -327,7 +353,8 @@ let taskListController = () => {
                 let priority = $(this).data('priority');
                 let createdts = $(this).data('createdts');
                 let duedate = $(this).data('duedate');
-                viewTaskController(taskid, taskname, tasknotes, priority, createdts, duedate);
+                let status = $(this).data('status');
+                viewTaskController(taskid, taskname, tasknotes, priority, createdts, duedate, status);
             });
         },
         "error": (data) => {
