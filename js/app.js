@@ -199,43 +199,24 @@ let taskListController = () => {
                 let taskid = task['taskid'];
 
                 let row = '<tr>' +
-                    '<td class="text-center align-middle">' + taskname + '</td>' +
-                    '<td class="text-center align-middle">' +
-                        '<button type="button" class="btn btn-primary btn-sm view-task-btn me-1"' +
-                        ' data-taskid="' + taskid + '"' +
-                        ' data-taskname="' + taskname + '"' +
-                        ' data-tasknotes="' + tasknotes + '">' +
-                        '<i class="fa fa-eye"></i> View</button>' +
-                        '<button type="button" class="btn btn-warning btn-sm edit-task-btn"' +
-                        ' data-taskid="' + taskid + '"' +
-                        ' data-taskname="' + taskname + '"' +
-                        ' data-tasknotes="' + tasknotes + '">' +
-                        '<i class="fa fa-edit"></i> Edit</button>' +
+                    '<td class="text-center align-middle">' + taskname + 
+                    '&nbsp;&nbsp;<button type="button" class="btn btn-sm options-btn"' +
+                    ' style="background:none; border:none; color:#008080; font-size:1.1em;"' +
+                    ' data-taskid="' + taskid + '"' +
+                    ' data-taskname="' + taskname + '"' +
+                    ' data-tasknotes="' + tasknotes + '">' +
+                    '<i class="fa fa-sliders"></i></button>' +
                     '</td>' +
                 '</tr>';
 
                 $("#tasks_table_body").append(row);
             }
 
-            // Add click handlers for view buttons
-            $('#tasks_table_body .view-task-btn').click( function() {
+            $('#tasks_table_body .options-btn').click( function() {
                 let taskid = $(this).data('taskid');
                 let taskname = $(this).data('taskname');
                 let tasknotes = $(this).data('tasknotes');
-
                 viewTaskController(taskid, taskname, tasknotes);
-            });
-            // Add click handlers for edit buttons
-            $('#tasks_table_body .edit-task-btn').click( function() {
-                let taskid = $(this).data('taskid');
-                let taskname = $(this).data('taskname');
-                let tasknotes = $(this).data('tasknotes');
-
-                $("#edit_task_id").val(taskid);
-                $("#edit_taskname").val(taskname);
-                $("#edit_tasknotes").val(tasknotes);
-                $(".content-wrapper").hide();
-                $("#div-edittask").show();
             });
         },
         "error": (data) => {
