@@ -126,7 +126,7 @@ let saveTaskController = () => {
 };
 
 
-let viewTaskController = (taskId, taskName, taskNotes, taskPriority) => {
+let viewTaskController = (taskId, taskName, taskNotes, taskPriority, taskCreated) => {
     $("#view_task_id").val(taskId);
     $("#view_task_name").html(taskName);
     $("#view_task_notes").html(taskNotes);
@@ -146,6 +146,11 @@ let viewTaskController = (taskId, taskName, taskNotes, taskPriority) => {
         prioritylabel = '<span class="badge" style="background-color:#28a745;">🟢 Low</span>';
     }
     $("#view_task_priority").html(prioritylabel);
+
+    let dateobj = new Date(taskCreated);
+    let dateoptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    let formatteddate = dateobj.toLocaleDateString('en-US', dateoptions);
+    $("#view_task_created").html("Created on " + formatteddate);
 
     $(".content-wrapper").hide();
     $("#div-viewtask").show();
@@ -252,6 +257,7 @@ let taskListController = () => {
                 let taskname = task['taskname'];
                 let tasknotes = task['tasknotes'];
                 let taskid = task['taskid'];
+                let createdts = task['createdts'];
                 let priority = task['priority'];
                 let prioritybadge = "";
 
@@ -273,7 +279,8 @@ let taskListController = () => {
                     ' data-taskid="' + taskid + '"' +
                     ' data-taskname="' + taskname + '"' +
                     ' data-tasknotes="' + tasknotes + '"' +
-                    ' data-priority="' + priority + '">' +
+                    ' data-priority="' + priority + '"' +
+                    ' data-createdts="' + createdts + '">' +
                     '<i class="fa fa-sliders"></i> Options</button>' +
                     '</td>' +
                 '</tr>';
@@ -286,7 +293,8 @@ let taskListController = () => {
                 let taskname = $(this).data('taskname');
                 let tasknotes = $(this).data('tasknotes');
                 let priority = $(this).data('priority');
-                viewTaskController(taskid, taskname, tasknotes, priority);
+                let createdts = $(this).data('createdts');
+                viewTaskController(taskid, taskname, tasknotes, priority, createdts);
             });
         },
         "error": (data) => {
