@@ -566,7 +566,7 @@ let taskListController = () => {
                     'data-newpriority="high">🔴 High</div>' +
                     '<div class="priority-dropdown-item px-3 py-2" ' +
                     'style="cursor:pointer; font-size:0.9em;" ' +
-                    'data-taskid="' + taskid + '" '}
+                    'data-taskid="' + taskid + '" '
                     'data-newpriority="medium">🟡 Medium</div>' +
                     '<div class="priority-dropdown-item px-3 py-2" ' +
                     'style="cursor:pointer; font-size:0.9em;" ' +
