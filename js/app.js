@@ -723,17 +723,36 @@ let adminReportController = () => {
     }
 
         let table = '<table class="table table-striped table-bordered">';
-        table += '<thead><tr><th>Last Name</th><th>First Name</th><th>Task Name</th><th>Task Notes</th></tr></thead>';
+        table += '<thead>';
+        table += '<tr>';
+        table += '<th>First Name</th>';
+        table += '<th>Last Name</th>';
+        table += '<th>Task</th>';
+        table += '<th>Priority</th>';
+        table += '<th>Status</th>';
+        table += '<th>Due Date</th>';
+        table += '</tr>';
+        table += '</thead>';
         table += '<tbody>';
+
         for (let i = 0; i < results.length; i++) {
             let row = results[i];
+            let duedatedisplay = "None";
+            if (row['duedate'] != null && row['duedate'] != "") {
+                let duedateobj = new Date(row['duedate']);
+                let dueoptions = { month: 'short', day: 'numeric', year: 'numeric' };
+                duedatedisplay = duedateobj.toLocaleDateString('en-US', dueoptions);
+            }
             table += '<tr>';
-            table += '<td>' + row['lname'] + '</td>';
             table += '<td>' + row['fname'] + '</td>';
+            table += '<td>' + row['lname'] + '</td>';
             table += '<td>' + row['taskname'] + '</td>';
-            table += '<td>' + row['tasknotes'] + '</td>';
+            table += '<td>' + row['priority'] + '</td>';
+            table += '<td>' + row['status'] + '</td>';
+            table += '<td>' + duedatedisplay + '</td>';
             table += '</tr>';
-    }
+        }
+
         table += '</tbody></table>';
         $("#adminreport_table_container").html(table);
 
