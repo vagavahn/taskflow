@@ -246,13 +246,36 @@ let taskListController = () => {
             let priorityorder = { 'high': 1, 'medium': 2, 'low': 3 };
 
             results.sort( function(a, b) {
+                let duedatea = a['duedate'];
+                let duedateb = b['duedate'];
                 let prioritya = priorityorder[a['priority']];
                 let priorityb = priorityorder[b['priority']];
+
                 if (prioritya == undefined) {
                     prioritya = 2;
                 }
                 if (priorityb == undefined) {
                     priorityb = 2;
+                }
+
+                if (duedatea == null && duedateb == null) {
+                    return prioritya - priorityb;
+                }
+                if (duedatea == null) {
+                    return 1;
+                }
+                if (duedateb == null) {
+                    return -1;
+                }
+
+                let datea = new Date(duedatea);
+                let dateb = new Date(duedateb);
+
+                if (datea < dateb) {
+                    return -1;
+                }
+                if (datea > dateb) {
+                    return 1;
                 }
                 return prioritya - priorityb;
             });
@@ -290,16 +313,28 @@ let taskListController = () => {
                 let duedate = task['duedate'];
                 let status = task['status'];
                 let priority = task['priority'];
-                let prioritybadge = "";
+                let prioritycolor = "#ffc107";
+                let prioritylabeltext = "🟡 Medium";
+                let prioritytextcolor = "#000";
                 if (priority == "high") {
-                    prioritybadge = '<span class="badge me-1" style="background-color:#dc3545; font-size:0.75em; cursor:default;">🔴 High</span>';
-                }
-                if (priority == "medium") {
-                    prioritybadge = '<span class="badge me-1" style="background-color:#ffc107; color:#000; font-size:0.75em; cursor:default;">🟡 Medium</span>';
+                    prioritycolor = "#dc3545";
+                    prioritylabeltext = "🔴 High";
+                    prioritytextcolor = "#fff";
                 }
                 if (priority == "low") {
-                    prioritybadge = '<span class="badge me-1" style="background-color:#28a745; font-size:0.75em; cursor:default;">🟢 Low</span>';
+                    prioritycolor = "#28a745";
+                    prioritylabeltext = "🟢 Low";
+                    prioritytextcolor = "#fff";
                 }
+
+                let prioritybadge = '<span class="badge me-1 priority-badge" ' +
+                    'id="priority-badge-' + taskid + '" ' +
+                    'style="background-color:' + prioritycolor + '; ' +
+                    'color:' + prioritytextcolor + '; ' +
+                    'font-size:0.75em; cursor:pointer;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-priority="' + priority + '">' +
+                    prioritylabeltext + '</span>';
 
                 let duedatebadge = "";
                 if (duedate != null && duedate != "" && duedate != "null") {
@@ -471,7 +506,109 @@ let taskListController = () => {
                 });
             });
 
+            $(document).off('click', '.priority-badge');
+            $(document).on('click', '.priority-badge', function(e) {
+                e.stopPropagation();
+
+                $('.priority-dropdown-menu').remove();
+                $('.status-dropdown-menu').remove();
+
+                let taskid = $(this).data('taskid');
+                let offset = $(this).offset();
+                let height = $(this).outerHeight();
+
+                let menu = '<div class="priority-dropdown-menu card shadow" ' +
+                    'style="position:fixed; ' +
+                    'top:' + (offset.top + height + 4) + 'px; ' +
+                    'left:' + offset.left + 'px; ' +
+                    'z-index:9999; ' +
+                    'min-width:150px; ' +
+                    'padding:4px 0;">' +
+                    '<div class="priority-dropdown-item px-3 py-2" ' +
+                    'style="cursor:pointer; font-size:0.9em;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newpriority="high">🔴 High</div>' +
+                    '<div class="priority-dropdown-item px-3 py-2" ' +
+                    'style="cursor:pointer; font-size:0.9em;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newpriority="medium">🟡 Medium</div>' +
+                    '<div class="priority-dropdown-item px-3 py-2" ' +
+                    'style="cursor:pointer; font-size:0.9em;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newpriority="low">🟢 Low</div>' +
+                    '</div>';
+
+                $('body').append(menu);
+
+                $('.priority-dropdown-item').hover(
+                    function() { $(this).css('background-color', '#f8f9fa'); },
+                    function() { $(this).css('background-color', ''); }
+                );
+            });
+
+            $(document).off('click', '.priority-dropdown-item');
+            $(document).on('click', '.priority-dropdown-item', function(e) {
+                e.stopPropagation();
+
+                let taskid = $(this).data('taskid');
+                let newpriority = $(this).data('newpriority');
+                let token = localStorage.getItem("token");
+
+                $('.priority-dropdown-menu').remove();
+
+                let the_priority_data = "token=" + encodeURIComponent(token) +
+                    "&taskid=" + encodeURIComponent(taskid) +
+                    "&priority=" + encodeURIComponent(newpriority);
+
+                $.ajax({
+                    "url": endpoint01 + "/updatepriority",
+                    "method": "PUT",
+                    "data": the_priority_data,
+                    "success": (results) => {
+                        console.log(results);
+
+                        let newcolor = "#ffc107";
+                        let newlabel = "🟡 Medium";
+                        let newtextcolor = "#000";
+                        if (newpriority == "high") {
+                            newcolor = "#dc3545";
+                            newlabel = "🔴 High";
+                            newtextcolor = "#fff";
+                        }
+                        if (newpriority == "low") {
+                            newcolor = "#28a745";
+                            newlabel = "🟢 Low";
+                            newtextcolor = "#fff";
+                        }
+
+                        $("#priority-badge-" + taskid).html(newlabel);
+                        $("#priority-badge-" + taskid).css("background-color", newcolor);
+                        $("#priority-badge-" + taskid).css("color", newtextcolor);
+                        $("#priority-badge-" + taskid).data("priority", newpriority);
+
+                        let highcount = 0;
+                        let mediumcount = 0;
+                        let lowcount = 0;
+                        $('.priority-badge').each( function() {
+                            let p = $(this).data('priority');
+                            if (p == "high") { highcount++; }
+                            if (p == "medium") { mediumcount++; }
+                            if (p == "low") { lowcount++; }
+                        });
+                        $("#badge-high").html("🔴 " + highcount + " High");
+                        $("#badge-medium").html("🟡 " + mediumcount + " Medium");
+                        $("#badge-low").html("🟢 " + lowcount + " Low");
+                    },
+                    "error": (data) => {
+                        console.log(data);
+                        $('#tasks_message').html("Failed to update priority.");
+                        $('#tasks_message').addClass("alert alert-danger");
+                    }
+                });
+            });
+
             $(document).on('click', function() {
+                $('.priority-dropdown-menu').remove();
                 $('.status-dropdown-menu').remove();
             });
         },
