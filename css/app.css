@@ -1,0 +1,96 @@
+body {
+    background-color: #212529;
+    font-size: 1.25rem;
+    font-family: 'Roboto', sans-serif;
+}
+label{
+    margin-top:10px;
+}
+.container-fluid{
+    background-color: #fff;
+    min-height: 400px;
+}
+.btn-default{
+    /* BS4 changed the appearance of btn-default on anchor tags.
+      I liked the old way better... so that's
+      what I am making happen here.  */
+    background-color: #CCC;
+    color: black;
+}
+.btn {
+    /*make text wrap nicely in buttons */
+    white-space:normal;
+}
+.btn-primary {
+    background-color: #008080;
+    border-color: #008080;
+}
+.btn-primary:hover {
+    background-color: #006666;
+    border-color: #006666;
+}
+.btn-warning {
+    background-color: #FFBF00;
+    border-color: #FFBF00;
+    color: #000;
+}
+.btn-warning:hover {
+    background-color: #E6A800;
+    border-color: #E6A800;
+}
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #138496;
+}
+.content-wrapper {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.table thead th {
+    background-color: #008080;
+    color: #fff;
+}
+.table tbody tr:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+.locked {
+    display: none !important; /*locked content must not be shown to user*/
+}
+
+.unlocked {
+    border-width: initial; /*set border-width to whatever the default is. */
+}
+
+.secured {
+    border-width: initial; /*set border-width to whatever the default is. */
+}
+@media (max-width: 575px) {
+    .btn {
+        width: 100% !important;
+    }
+}
+@media print {
+    nav, footer, .content-wrapper:not(#div-viewtask) {
+        display: none !important;
+    }
+    #div-viewtask {
+        display: block !important;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+    }
+    #div-viewtask .d-grid {
+        display: none !important;
+    }
+    body {
+        background-color: #fff;
+        color: #000;
+    }
+}
