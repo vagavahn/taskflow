@@ -326,11 +326,36 @@ let taskListController = () => {
                     statuslabel = "✅ Complete";
                 }
 
-                let statusbadge = '<span class="badge me-1 status-cycle-btn" ' +
-                    'style="background-color:' + statuscolor + '; font-size:0.75em; cursor:pointer;" ' +
+                let popovercontent = '<div class="status-options">' +
+                    '<div class="status-option py-1 px-2" ' +
+                    'style="cursor:pointer;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newstatus="pending">' +
+                    '⏳ Pending</div>' +
+                    '<div class="status-option py-1 px-2" ' +
+                    'style="cursor:pointer;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newstatus="in-progress">' +
+                    '🔄 In Progress</div>' +
+                    '<div class="status-option py-1 px-2" ' +
+                    'style="cursor:pointer;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newstatus="complete">' +
+                    '✅ Complete</div>' +
+                    '</div>';
+
+                let statusbadge = '<span class="badge me-1 status-badge" ' +
+                    'id="status-badge-' + taskid + '" ' +
+                    'style="background-color:' + statuscolor + '; ' +
+                    'font-size:0.75em; cursor:pointer;" ' +
                     'data-taskid="' + taskid + '" ' +
                     'data-status="' + status + '" ' +
-                    'title="Click to change status">' +
+                    'data-bs-toggle="popover" ' +
+                    'data-bs-placement="top" ' +
+                    'data-bs-html="true" ' +
+                    'data-bs-trigger="click" ' +
+                    'data-bs-content="' + popovercontent.replace(/"/g, "&quot;") + '" ' +
+                    'title="Change Status">' +
                     statuslabel + '</span>';
 
                 let row = '<tr>' +
@@ -369,31 +394,25 @@ let taskListController = () => {
                 viewTaskController(taskid, taskname, tasknotes, priority, createdts, duedate, status);
             });
 
-            $('#tasks_table_body .status-cycle-btn').click( function() {
-                let taskid = $(this).data('taskid');
-                let currentstatus = $(this).data('status');
-                let newstatus = "pending";
+            let popoverelements = document.querySelectorAll('[data-bs-toggle="popover"]');
+            popoverelements.forEach( function(el) {
+                new bootstrap.Popover(el);
+            });
 
-                if (currentstatus == "pending") {
-                    newstatus = "in-progress";
-                }
-                if (currentstatus == "in-progress") {
-                    newstatus = "complete";
-                }
-                if (currentstatus == "complete") {
-                    newstatus = "pending";
-                }
+            $(document).on('click', '.status-option', function() {
+                let taskid = $(this).data('taskid');
+                let newstatus = $(this).data('newstatus');
+                let token = localStorage.getItem("token");
 
                 if (newstatus == "complete") {
-                    let confirmdelete = confirm("Mark this task as complete? It will be removed from your task board.");
-                    if (!confirmdelete) {
+                    let confirmed = confirm("Mark this task as complete? It will be removed from your task board.");
+                    if (!confirmed) {
                         return;
                     }
                 }
 
-                let token = localStorage.getItem("token");
-                let the_status_data = "token=" + encodeURIComponent(token) + 
-                    "&taskid=" + encodeURIComponent(taskid) + 
+                let the_status_data = "token=" + encodeURIComponent(token) +
+                    "&taskid=" + encodeURIComponent(taskid) +
                     "&status=" + encodeURIComponent(newstatus);
 
                 $.ajax({
@@ -402,7 +421,41 @@ let taskListController = () => {
                     "data": the_status_data,
                     "success": (results) => {
                         console.log(results);
-                        taskListController();
+
+                        let popoverelement = document.getElementById('status-badge-' + taskid);
+                        if (popoverelement) {
+                            let popoverinstance = bootstrap.Popover.getInstance(popoverelement);
+                            if (popoverinstance) {
+                                popoverinstance.hide();
+                            }
+                        }
+
+                        if (newstatus == "complete") {
+                            let row = $("#status-badge-" + taskid).closest('tr');
+                            row.fadeOut(300, function() {
+                                $(this).remove();
+                                let remaining = $("#tasks_table_body tr").length;
+                                let total = parseInt($("#badge-total").html().replace(/[^0-9]/g, ''));
+                                let newtotal = total - 1;
+                                $("#badge-total").html("📋 " + newtotal + " Total");
+                            });
+                            return;
+                        }
+
+                        let newcolor = "#6c757d";
+                        let newlabel = "⏳ Pending";
+                        if (newstatus == "in-progress") {
+                            newcolor = "#17a2b8";
+                            newlabel = "🔄 In Progress";
+                        }
+                        if (newstatus == "complete") {
+                            newcolor = "#28a745";
+                            newlabel = "✅ Complete";
+                        }
+
+                        $("#status-badge-" + taskid).html(newlabel);
+                        $("#status-badge-" + taskid).css("background-color", newcolor);
+                        $("#status-badge-" + taskid).data("status", newstatus);
                     },
                     "error": (data) => {
                         console.log(data);
@@ -410,6 +463,18 @@ let taskListController = () => {
                         $('#tasks_message').addClass("alert alert-danger");
                     }
                 });
+            });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).hasClass('status-badge') && 
+                    !$(e.target).closest('.popover').length) {
+                    $('.status-badge').each( function() {
+                        let popoverinstance = bootstrap.Popover.getInstance(this);
+                        if (popoverinstance) {
+                            popoverinstance.hide();
+                        }
+                    });
+                }
             });
         },
         "error": (data) => {
