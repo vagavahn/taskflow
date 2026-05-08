@@ -151,6 +151,40 @@
         <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-tasks" style="display: none;">
             <h2>Task Board</h2>
 
+            <div id="welcome-message" class="mb-3">
+                <p style="font-size:1em; color:#555; margin-bottom:8px;">
+                    Welcome back, <strong id="welcome-name"></strong>! 
+                    Here's your task summary:
+                </p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <span class="badge" 
+                          id="badge-total"
+                          style="background-color:#008080; 
+                                 font-size:0.85em; padding:6px 10px;">
+                        📋 0 Total
+                    </span>
+                    <span class="badge" 
+                          id="badge-high"
+                          style="background-color:#dc3545; 
+                                 font-size:0.85em; padding:6px 10px;">
+                        🔴 0 High
+                    </span>
+                    <span class="badge" 
+                          id="badge-medium"
+                          style="background-color:#ffc107; 
+                                 color:#000;
+                                 font-size:0.85em; padding:6px 10px;">
+                        🟡 0 Medium
+                    </span>
+                    <span class="badge" 
+                          id="badge-low"
+                          style="background-color:#28a745; 
+                                 font-size:0.85em; padding:6px 10px;">
+                        🟢 0 Low
+                    </span>
+                </div>
+            </div>
+
             <div id="tasks_message" class=""></div>
 
             <div style="max-width:50%; margin-bottom:10px;">

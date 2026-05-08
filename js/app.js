@@ -48,6 +48,7 @@ let loginController = () => {
                 $("#nav-username-display").html(results[0]['fname']);
                 $("#dropdown-fullname").html(results[0]['fname'] + " " + results[0]['lname']);
                 $("#dropdown-username").html("@" + results[0]['username']);
+                $("#welcome-name").html(results[0]['fname']);
                 // Show/hide admin report nav
                 if (localStorage.getItem("isadmin") == "Y") {
                     $("#nav-adminreport").show();
@@ -221,6 +222,28 @@ let taskListController = () => {
                 }
                 return prioritya - priorityb;
             });
+
+            let totalcount = results.length;
+            let highcount = 0;
+            let mediumcount = 0;
+            let lowcount = 0;
+
+            for (let x = 0; x < results.length; x++) {
+                if (results[x]['priority'] == 'high') {
+                    highcount++;
+                }
+                if (results[x]['priority'] == 'medium') {
+                    mediumcount++;
+                }
+                if (results[x]['priority'] == 'low') {
+                    lowcount++;
+                }
+            }
+
+            $("#badge-total").html("📋 " + totalcount + " Total");
+            $("#badge-high").html("🔴 " + highcount + " High");
+            $("#badge-medium").html("🟡 " + mediumcount + " Medium");
+            $("#badge-low").html("🟢 " + lowcount + " Low");
 
             $("#task-search").val("");
 
@@ -508,6 +531,7 @@ if (localStorage.token){
     $("#nav-username-display").html(localStorage.getItem("fname"));
     $("#dropdown-fullname").html(localStorage.getItem("fname") + " " + localStorage.getItem("lname"));
     $("#dropdown-username").html("@" + localStorage.getItem("username"));
+    $("#welcome-name").html(localStorage.getItem("fname"));
     if (localStorage.getItem("isadmin") == "Y") {
         $("#nav-adminreport").show();
         $("#dropdown-adminreport").show();
