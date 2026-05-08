@@ -157,7 +157,7 @@
                 <input type="hidden" name="token" id="tasks_token" value="">
             </form>
 
-            <div class="table-responsive">
+            <div class="table-responsive" style="width:50%;">
                 <table class="table table-striped table-bordered">
                     <thead id="table_header">
                         <tr>
@@ -169,24 +169,58 @@
                     </tbody>
                 </table>
                 <div>
-                    <input type="button" value="+ Add Task" id="btnAddTask" class="btn btn-primary" style="font-size:1em; width:25%; margin: 0 0 0 12.5%; display: block;">
+                    <input type="button" value="+ Add Task" id="btnAddTask" class="btn btn-primary" style="font-size:1em; width:50%; margin-top:10px; display: block;">
                 </div>
             </div>
 
         </div>
 
         <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-viewtask" style="display: none;">
-            <h1>View Task</h1>
-            <input type="hidden" id="view_task_id" value="">
-            <p><strong>Task:</strong> <span id="view_task_name"></span></p>
-            <p><strong>Task Notes:</strong> <span id="view_task_notes"></span></p>
 
-            <div class="d-grid gap-2">
-                <button id="btnGoBack" class="btn btn-primary btn-lg" type="button"><i class="fa fa-arrow-left"></i> Go Back</button>
-                <button id="btnEditTask" class="btn btn-warning btn-lg" type="button"><i class="fa fa-edit"></i> Edit Task</button>
-                <button id="btnPrintTask" class="btn btn-info btn-lg" type="button"><i class="fa fa-print"></i> Print Task</button>
-                <button id="btnDeleteTask" class="btn btn-danger btn-lg" type="button"><i class="fa fa-trash"></i> Delete Task</button>
+            <a href="#" id="btnGoBack" 
+               style="color:#008080; text-decoration:none; 
+                      font-size:0.9em;">
+                <i class="fa fa-arrow-left"></i> Back to Task Board
+            </a>
+
+            <hr>
+
+            <input type="hidden" id="view_task_id" value="">
+
+            <div class="card border-0 shadow-sm mb-3" 
+                 style="border-radius:12px;">
+                <div class="card-body p-4">
+                    <h3 id="view_task_name" 
+                        style="font-weight:600; 
+                               margin-bottom:12px;">
+                    </h3>
+                    <hr style="border-color:#e0e0e0;">
+                    <p id="view_task_notes" 
+                       style="color:#555; 
+                              font-size:1em; 
+                              line-height:1.6;">
+                    </p>
+                </div>
             </div>
+
+            <div class="d-flex gap-2 mt-3">
+                <button id="btnEditTask" 
+                        class="btn btn-warning" 
+                        type="button">
+                    <i class="fa fa-edit"></i> Edit
+                </button>
+                <button id="btnPrintTask" 
+                        class="btn btn-info" 
+                        type="button">
+                    <i class="fa fa-print"></i> Print
+                </button>
+                <button id="btnDeleteTask" 
+                        class="btn btn-danger" 
+                        type="button">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+            </div>
+
         </div>
 
         <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-addtask" style="display: none;">
