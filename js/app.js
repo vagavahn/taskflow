@@ -302,6 +302,26 @@ let taskListController = () => {
             $("#badge-medium").html("🟡 " + mediumcount + " Medium");
             $("#badge-low").html("🟢 " + lowcount + " Low");
 
+            completedTasksController();
+
+            $.ajax({
+                "url": endpoint01 + "/completedtasks",
+                "method": "GET",
+                "data": the_serialized_data,
+                "success": (completedresults) => {
+                    console.log(completedresults);
+                    let completedcount = 0;
+                    if (completedresults) {
+                        completedcount = completedresults.length;
+                    }
+                    statsChartController(totalcount, highcount, mediumcount, lowcount, completedcount);
+                },
+                "error": (data) => {
+                    console.log(data);
+                    statsChartController(totalcount, highcount, mediumcount, lowcount, 0);
+                }
+            });
+
             $("#task-search").val("");
 
             for (let i = 0; i < results.length; i++) {
@@ -846,6 +866,120 @@ let changePasswordController = () => {
             console.log(data);
             $('#changepassword_message').html("Failed to update password.");
             $('#changepassword_message').addClass("alert alert-danger text-center");
+        }
+    });
+};
+
+let completedTasksController = () => {
+    $('#completed-message').html("");
+    $('#completed-message').removeClass();
+    $("#completed-table-container").html("");
+
+    let the_serialized_data = $("#form-tasks").serialize();
+    console.log(the_serialized_data);
+
+    $.ajax({
+        "url": endpoint01 + "/completedtasks",
+        "method": "GET",
+        "data": the_serialized_data,
+        "success": (results) => {
+            console.log(results);
+
+            $("#completed-count").html(results.length);
+
+            if (!results || results.length == 0) {
+                $('#completed-message').html('No completed tasks yet.');
+                $('#completed-message').addClass("alert alert-info text-center");
+                return;
+            }
+
+            let table = '<table class="table table-striped table-bordered" style="font-size:0.9em;">';
+            table += '<thead>';
+            table += '<tr>';
+            table += '<th>Task</th>';
+            table += '<th>Priority</th>';
+            table += '<th>Completed</th>';
+            table += '</tr>';
+            table += '</thead>';
+            table += '<tbody>';
+
+            for (let i = 0; i < results.length; i++) {
+                let row = results[i];
+                let prioritybadge = '<span class="badge" style="background-color:#ffc107; color:#000; font-size:0.75em;">🟡 Medium</span>';
+                if (row['priority'] == 'high') {
+                    prioritybadge = '<span class="badge" style="background-color:#dc3545; font-size:0.75em;">🔴 High</span>';
+                }
+                if (row['priority'] == 'low') {
+                    prioritybadge = '<span class="badge" style="background-color:#28a745; font-size:0.75em;">🟢 Low</span>';
+                }
+
+                let createddateobj = new Date(row['createdts']);
+                let dateoptions = { month: 'short', day: 'numeric', year: 'numeric' };
+                let formatteddate = createddateobj.toLocaleDateString('en-US', dateoptions);
+
+                table += '<tr>';
+                table += '<td>' + row['taskname'] + '</td>';
+                table += '<td>' + prioritybadge + '</td>';
+                table += '<td style="color:#888; font-size:0.85em;">' + formatteddate + '</td>';
+                table += '</tr>';
+            }
+
+            table += '</tbody></table>';
+            $("#completed-table-container").html(table);
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#completed-message').html("Failed to load completed tasks.");
+            $('#completed-message').addClass("alert alert-danger");
+        }
+    });
+};
+
+let chartinstance = null;
+
+let statsChartController = (totalcount, highcount, mediumcount, lowcount, completedcount) => {
+    let ctx = document.getElementById('statsChart');
+    if (!ctx) {
+        return;
+    }
+
+    if (chartinstance != null) {
+        chartinstance.destroy();
+    }
+
+    chartinstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total', 'High', 'Medium', 'Low', 'Completed'],
+            datasets: [{
+                label: 'Tasks',
+                data: [totalcount, highcount, mediumcount, lowcount, completedcount],
+                backgroundColor: [
+                    '#008080',
+                    '#dc3545',
+                    '#ffc107',
+                    '#28a745',
+                    '#6c757d'
+                ],
+                borderRadius: 6,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
         }
     });
 };
