@@ -182,7 +182,8 @@
 
         </div>
 
-        <div class="col-12 col-md-8 mx-auto content-wrapper" id="div-viewtask" style="display: none;">
+        <div class="col-12 col-md-8 mx-auto content-wrapper" 
+             id="div-viewtask" style="display: none;">
 
             <a href="#" id="btnGoBack" 
                style="color:#008080; text-decoration:none; 
@@ -192,40 +193,64 @@
 
             <hr>
 
+            <h4 style="font-weight:600; margin-bottom:20px;">
+                <i class="fa fa-eye"></i> Task Details
+            </h4>
+
             <input type="hidden" id="view_task_id" value="">
 
-            <div class="card border-0 shadow-sm mb-3" 
-                 style="border-radius:12px;">
-                <div class="card-body p-4">
-                    <h3 id="view_task_name" 
-                        style="font-weight:600; 
-                               margin-bottom:12px;">
-                    </h3>
-                    <hr style="border-color:#e0e0e0;">
+            <div style="max-width:500px;">
+                <div class="mb-3">
+                    <label style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Task
+                    </label>
+                    <p id="view_task_name" 
+                       style="font-size:1em; 
+                              margin-top:4px;
+                              margin-bottom:0;
+                              color:#212529;">
+                    </p>
+                </div>
+
+                <hr style="border-color:#e0e0e0;">
+
+                <div class="mb-4">
+                    <label style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Notes
+                    </label>
                     <p id="view_task_notes" 
-                       style="color:#555; 
-                              font-size:1em; 
+                       style="font-size:1em; 
+                              margin-top:4px;
+                              margin-bottom:0;
+                              color:#555;
                               line-height:1.6;">
                     </p>
                 </div>
-            </div>
 
-            <div class="d-flex gap-2 mt-3">
-                <button id="btnEditTask" 
-                        class="btn btn-warning" 
-                        type="button">
-                    <i class="fa fa-edit"></i> Edit
-                </button>
-                <button id="btnPrintTask" 
-                        class="btn btn-info" 
-                        type="button">
-                    <i class="fa fa-print"></i> Print
-                </button>
-                <button id="btnDeleteTask" 
-                        class="btn btn-danger" 
-                        type="button">
-                    <i class="fa fa-trash"></i> Delete
-                </button>
+                <div class="d-flex gap-2 justify-content-end">
+                    <button id="btnEditTask" 
+                            class="btn btn-warning btn-sm" 
+                            type="button"
+                            style="min-width:80px;">
+                        <i class="fa fa-edit"></i> Edit
+                    </button>
+                    <button id="btnPrintTask" 
+                            class="btn btn-secondary btn-sm" 
+                            type="button"
+                            style="min-width:80px;">
+                        <i class="fa fa-print"></i> Print
+                    </button>
+                    <button id="btnDeleteTask" 
+                            class="btn btn-danger btn-sm" 
+                            type="button"
+                            style="min-width:80px;">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </div>
             </div>
 
         </div>
