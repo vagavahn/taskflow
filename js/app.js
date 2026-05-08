@@ -208,6 +208,20 @@ let taskListController = () => {
 
             $("#table_header").show();
 
+            let priorityorder = { 'high': 1, 'medium': 2, 'low': 3 };
+
+            results.sort( function(a, b) {
+                let prioritya = priorityorder[a['priority']];
+                let priorityb = priorityorder[b['priority']];
+                if (prioritya == undefined) {
+                    prioritya = 2;
+                }
+                if (priorityb == undefined) {
+                    priorityb = 2;
+                }
+                return prioritya - priorityb;
+            });
+
             $("#task-search").val("");
 
             for (let i = 0; i < results.length; i++) {
