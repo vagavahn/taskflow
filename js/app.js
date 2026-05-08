@@ -433,13 +433,21 @@ let taskListController = () => {
 
                 let taskid = $(this).data('taskid');
                 let currentstatus = $(this).data('status');
-                let offset = $(this).offset();
-                let height = $(this).outerHeight();
+                let rect = this.getBoundingClientRect();
+                let scrolltop = window.pageYOffset || document.documentElement.scrollTop;
+                let scrollleft = window.pageXOffset || document.documentElement.scrollLeft;
+                let toppos = rect.bottom + scrolltop + 4;
+                let leftpos = rect.left + scrollleft;
+                let menuheight = 120;
+
+                if (rect.bottom + menuheight > window.innerHeight) {
+                    toppos = rect.top + scrolltop - menuheight - 4;
+                }
 
                 let menu = '<div class="status-dropdown-menu card shadow" ' +
-                    'style="position:fixed; ' +
-                    'top:' + (offset.top + height + 4) + 'px; ' +
-                    'left:' + offset.left + 'px; ' +
+                    'style="position:absolute; ' +
+                    'top:' + toppos + 'px; ' +
+                    'left:' + leftpos + 'px; ' +
                     'z-index:9999; ' +
                     'min-width:150px; ' +
                     'padding:4px 0;">' +
@@ -534,13 +542,21 @@ let taskListController = () => {
                 $('.status-dropdown-menu').remove();
 
                 let taskid = $(this).data('taskid');
-                let offset = $(this).offset();
-                let height = $(this).outerHeight();
+                let rect = this.getBoundingClientRect();
+                let scrolltop = window.pageYOffset || document.documentElement.scrollTop;
+                let scrollleft = window.pageXOffset || document.documentElement.scrollLeft;
+                let toppos = rect.bottom + scrolltop + 4;
+                let leftpos = rect.left + scrollleft;
+                let menuheight = 120;
+
+                if (rect.bottom + menuheight > window.innerHeight) {
+                    toppos = rect.top + scrolltop - menuheight - 4;
+                }
 
                 let menu = '<div class="priority-dropdown-menu card shadow" ' +
-                    'style="position:fixed; ' +
-                    'top:' + (offset.top + height + 4) + 'px; ' +
-                    'left:' + offset.left + 'px; ' +
+                    'style="position:absolute; ' +
+                    'top:' + toppos + 'px; ' +
+                    'left:' + leftpos + 'px; ' +
                     'z-index:9999; ' +
                     'min-width:150px; ' +
                     'padding:4px 0;">' +
@@ -550,7 +566,7 @@ let taskListController = () => {
                     'data-newpriority="high">🔴 High</div>' +
                     '<div class="priority-dropdown-item px-3 py-2" ' +
                     'style="cursor:pointer; font-size:0.9em;" ' +
-                    'data-taskid="' + taskid + '" ' +
+                    'data-taskid="' + taskid + '" '}
                     'data-newpriority="medium">🟡 Medium</div>' +
                     '<div class="priority-dropdown-item px-3 py-2" ' +
                     'style="cursor:pointer; font-size:0.9em;" ' +
