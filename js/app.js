@@ -906,6 +906,13 @@ if (localStorage.token){
         loginController();
     });
 
+    /* what happens if the demo login link is clicked? */
+    $('#btnDemoLogin').click( () => {
+        $("#username").val("demo");
+        $("#password").val("demo123");
+        loginController();
+    });
+
     /* what happens if the save task button is clicked? */
     $('#btnSaveTask').click( () => {
         saveTaskController();
