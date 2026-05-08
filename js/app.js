@@ -125,10 +125,26 @@ let saveTaskController = () => {
 };
 
 
-let viewTaskController = (taskId, taskName, taskNotes) => {
+let viewTaskController = (taskId, taskName, taskNotes, taskPriority) => {
     $("#view_task_id").val(taskId);
     $("#view_task_name").html(taskName);
     $("#view_task_notes").html(taskNotes);
+    $("#edit_task_id").val(taskId);
+    $("#edit_taskname").val(taskName);
+    $("#edit_tasknotes").val(taskNotes);
+    $("#edit_taskpriority").val(taskPriority);
+
+    let prioritylabel = "";
+    if (taskPriority == "high") {
+        prioritylabel = '<span class="badge" style="background-color:#dc3545;">🔴 High</span>';
+    }
+    if (taskPriority == "medium") {
+        prioritylabel = '<span class="badge" style="background-color:#ffc107; color:#000;">🟡 Medium</span>';
+    }
+    if (taskPriority == "low") {
+        prioritylabel = '<span class="badge" style="background-color:#28a745;">🟢 Low</span>';
+    }
+    $("#view_task_priority").html(prioritylabel);
 
     $(".content-wrapper").hide();
     $("#div-viewtask").show();
@@ -199,15 +215,28 @@ let taskListController = () => {
                 let taskname = task['taskname'];
                 let tasknotes = task['tasknotes'];
                 let taskid = task['taskid'];
+                let priority = task['priority'];
+                let prioritybadge = "";
+
+                if (priority == "high") {
+                    prioritybadge = '<span class="badge ms-2" style="background-color:#dc3545; font-size:0.7em;">High</span>';
+                }
+                if (priority == "medium") {
+                    prioritybadge = '<span class="badge ms-2" style="background-color:#ffc107; color:#000; font-size:0.7em;">Medium</span>';
+                }
+                if (priority == "low") {
+                    prioritybadge = '<span class="badge ms-2" style="background-color:#28a745; font-size:0.7em;">Low</span>';
+                }
 
                 let row = '<tr>' +
-                    '<td class="align-middle" style="padding-left:12px;">' + 
-                    taskname + 
+                    '<td class="align-middle" style="padding-left:12px;">' +
+                    taskname + prioritybadge +
                     '<button type="button" class="btn btn-sm options-btn float-end"' +
                     ' style="background:none; border:none; color:#008080; font-size:0.9em;"' +
                     ' data-taskid="' + taskid + '"' +
                     ' data-taskname="' + taskname + '"' +
-                    ' data-tasknotes="' + tasknotes + '">' +
+                    ' data-tasknotes="' + tasknotes + '"' +
+                    ' data-priority="' + priority + '">' +
                     '<i class="fa fa-sliders"></i> Options</button>' +
                     '</td>' +
                 '</tr>';
@@ -219,7 +248,8 @@ let taskListController = () => {
                 let taskid = $(this).data('taskid');
                 let taskname = $(this).data('taskname');
                 let tasknotes = $(this).data('tasknotes');
-                viewTaskController(taskid, taskname, tasknotes);
+                let priority = $(this).data('priority');
+                viewTaskController(taskid, taskname, tasknotes, priority);
             });
         },
         "error": (data) => {
@@ -545,9 +575,11 @@ if (localStorage.token){
         let taskid = $("#view_task_id").val();
         let taskname = $("#view_task_name").html();
         let tasknotes = $("#view_task_notes").html();
+        let priority = $("#edit_taskpriority").val();
         $("#edit_task_id").val(taskid);
         $("#edit_taskname").val(taskname);
         $("#edit_tasknotes").val(tasknotes);
+        $("#edit_taskpriority").val(priority);
         $(".content-wrapper").hide();
         $("#div-edittask").show();
     });

@@ -230,6 +230,19 @@
                     </p>
                 </div>
 
+                <div class="mb-3">
+                    <label style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Priority
+                    </label>
+                    <p id="view_task_priority" 
+                       style="font-size:1em; 
+                              margin-top:4px;
+                              margin-bottom:0;">
+                    </p>
+                </div>
+
                 <hr style="border-color:#e0e0e0;">
 
                 <div class="mb-4">
@@ -313,6 +326,21 @@
                               placeholder="Add any details or notes..."></textarea>
                 </div>
 
+                <div class="mb-4">
+                    <label for="taskpriority" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Priority
+                    </label>
+                    <select name="priority" id="taskpriority" 
+                            class="form-select">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium" selected>🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                    </select>
+                </div>
+
                 <div class="d-flex gap-2 justify-content-end">
                     <input type="button" value="Cancel" 
                            id="btnCancelTask2" 
@@ -368,6 +396,21 @@
                     </label>
                     <textarea name="tasknotes" id="edit_tasknotes" 
                               class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit_taskpriority" 
+                           style="font-weight:500; font-size:0.9em; 
+                                  color:#888; text-transform:uppercase; 
+                                  letter-spacing:0.05em;">
+                        Priority
+                    </label>
+                    <select name="priority" id="edit_taskpriority" 
+                            class="form-select">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                    </select>
                 </div>
 
                 <div class="d-flex gap-2 justify-content-end">
