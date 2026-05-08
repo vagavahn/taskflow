@@ -291,55 +291,67 @@ let taskListController = () => {
                 let status = task['status'];
                 let priority = task['priority'];
                 let prioritybadge = "";
-
                 if (priority == "high") {
-                    prioritybadge = '<span class="badge ms-2" style="background-color:#dc3545; font-size:0.7em;">High</span>';
+                    prioritybadge = '<span class="badge me-1" style="background-color:#dc3545; font-size:0.75em; cursor:default;">🔴 High</span>';
                 }
                 if (priority == "medium") {
-                    prioritybadge = '<span class="badge ms-2" style="background-color:#ffc107; color:#000; font-size:0.7em;">Medium</span>';
+                    prioritybadge = '<span class="badge me-1" style="background-color:#ffc107; color:#000; font-size:0.75em; cursor:default;">🟡 Medium</span>';
                 }
                 if (priority == "low") {
-                    prioritybadge = '<span class="badge ms-2" style="background-color:#28a745; font-size:0.7em;">Low</span>';
+                    prioritybadge = '<span class="badge me-1" style="background-color:#28a745; font-size:0.75em; cursor:default;">🟢 Low</span>';
                 }
 
                 let duedatebadge = "";
-                if (duedate != null && duedate != "") {
+                if (duedate != null && duedate != "" && duedate != "null") {
                     let duedateobj = new Date(duedate);
                     let today = new Date();
                     today.setHours(0, 0, 0, 0);
                     if (duedateobj < today) {
-                        duedatebadge = '<span class="badge ms-1" style="background-color:#dc3545; font-size:0.7em;">Overdue</span>';
+                        duedatebadge = '<span class="badge me-1" style="background-color:#dc3545; font-size:0.75em; cursor:default;">⚠️ Overdue</span>';
                     } else {
                         let dueoptions = { month: 'short', day: 'numeric' };
                         let duelabel = duedateobj.toLocaleDateString('en-US', dueoptions);
-                        duedatebadge = '<span class="badge ms-1" style="background-color:#6c757d; font-size:0.7em;">Due ' + duelabel + '</span>';
+                        duedatebadge = '<span class="badge me-1" style="background-color:#6c757d; font-size:0.75em; cursor:default;">📅 ' + duelabel + '</span>';
                     }
                 }
 
-                let statusbadge = "";
-                if (status == "complete") {
-                    statusbadge = '<span class="badge ms-1" style="background-color:#28a745; font-size:0.7em;">✅ Complete</span>';
-                }
+                let statuscolor = "#6c757d";
+                let statuslabel = "⏳ Pending";
                 if (status == "in-progress") {
-                    statusbadge = '<span class="badge ms-1" style="background-color:#17a2b8; font-size:0.7em;">🔄 In Progress</span>';
+                    statuscolor = "#17a2b8";
+                    statuslabel = "🔄 In Progress";
                 }
-                if (status == "pending") {
-                    statusbadge = '<span class="badge ms-1" style="background-color:#6c757d; font-size:0.7em;">⏳ Pending</span>';
+                if (status == "complete") {
+                    statuscolor = "#28a745";
+                    statuslabel = "✅ Complete";
                 }
 
+                let statusbadge = '<span class="badge me-1 status-cycle-btn" ' +
+                    'style="background-color:' + statuscolor + '; font-size:0.75em; cursor:pointer;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-status="' + status + '" ' +
+                    'title="Click to change status">' +
+                    statuslabel + '</span>';
+
                 let row = '<tr>' +
-                    '<td class="align-middle" style="padding-left:12px;">' +
-                    taskname + prioritybadge + duedatebadge + statusbadge +
-                    '<button type="button" class="btn btn-sm options-btn float-end"' +
-                    ' style="background:none; border:none; color:#008080; font-size:0.9em;"' +
-                    ' data-taskid="' + taskid + '"' +
-                    ' data-taskname="' + taskname + '"' +
-                    ' data-tasknotes="' + tasknotes + '"' +
-                    ' data-priority="' + priority + '"' +
-                    ' data-createdts="' + createdts + '"' +
-                    ' data-duedate="' + duedate + '"' +
-                    ' data-status="' + status + '">' +
-                    '<i class="fa fa-sliders"></i> Options</button>' +
+                    '<td style="padding:8px 12px;">' +
+                        '<div class="d-flex justify-content-between align-items-center">' +
+                            '<span style="font-weight:500;">' + taskname + '</span>' +
+                            '<button type="button" class="btn btn-sm options-btn" ' +
+                            'style="background:none; border:none; color:#008080; font-size:0.9em;" ' +
+                            'data-taskid="' + taskid + '" ' +
+                            'data-taskname="' + taskname + '" ' +
+                            'data-tasknotes="' + tasknotes + '" ' +
+                            'data-priority="' + priority + '" ' +
+                            'data-createdts="' + createdts + '" ' +
+                            'data-duedate="' + duedate + '" ' +
+                            'data-status="' + status + '">' +
+                            '<i class="fa fa-sliders"></i> Options' +
+                            '</button>' +
+                        '</div>' +
+                        '<div class="mt-1">' +
+                            prioritybadge + duedatebadge + statusbadge +
+                        '</div>' +
                     '</td>' +
                 '</tr>';
 
@@ -355,6 +367,49 @@ let taskListController = () => {
                 let duedate = $(this).data('duedate');
                 let status = $(this).data('status');
                 viewTaskController(taskid, taskname, tasknotes, priority, createdts, duedate, status);
+            });
+
+            $('#tasks_table_body .status-cycle-btn').click( function() {
+                let taskid = $(this).data('taskid');
+                let currentstatus = $(this).data('status');
+                let newstatus = "pending";
+
+                if (currentstatus == "pending") {
+                    newstatus = "in-progress";
+                }
+                if (currentstatus == "in-progress") {
+                    newstatus = "complete";
+                }
+                if (currentstatus == "complete") {
+                    newstatus = "pending";
+                }
+
+                if (newstatus == "complete") {
+                    let confirmdelete = confirm("Mark this task as complete? It will be removed from your task board.");
+                    if (!confirmdelete) {
+                        return;
+                    }
+                }
+
+                let token = localStorage.getItem("token");
+                let the_status_data = "token=" + encodeURIComponent(token) + 
+                    "&taskid=" + encodeURIComponent(taskid) + 
+                    "&status=" + encodeURIComponent(newstatus);
+
+                $.ajax({
+                    "url": endpoint01 + "/updatestatus",
+                    "method": "PUT",
+                    "data": the_status_data,
+                    "success": (results) => {
+                        console.log(results);
+                        taskListController();
+                    },
+                    "error": (data) => {
+                        console.log(data);
+                        $('#tasks_message').html("Failed to update status.");
+                        $('#tasks_message').addClass("alert alert-danger");
+                    }
+                });
             });
         },
         "error": (data) => {
