@@ -326,36 +326,12 @@ let taskListController = () => {
                     statuslabel = "✅ Complete";
                 }
 
-                let popovercontent = '<div class="status-options">' +
-                    '<div class="status-option py-1 px-2" ' +
-                    'style="cursor:pointer;" ' +
-                    'data-taskid="' + taskid + '" ' +
-                    'data-newstatus="pending">' +
-                    '⏳ Pending</div>' +
-                    '<div class="status-option py-1 px-2" ' +
-                    'style="cursor:pointer;" ' +
-                    'data-taskid="' + taskid + '" ' +
-                    'data-newstatus="in-progress">' +
-                    '🔄 In Progress</div>' +
-                    '<div class="status-option py-1 px-2" ' +
-                    'style="cursor:pointer;" ' +
-                    'data-taskid="' + taskid + '" ' +
-                    'data-newstatus="complete">' +
-                    '✅ Complete</div>' +
-                    '</div>';
-
                 let statusbadge = '<span class="badge me-1 status-badge" ' +
                     'id="status-badge-' + taskid + '" ' +
                     'style="background-color:' + statuscolor + '; ' +
                     'font-size:0.75em; cursor:pointer;" ' +
                     'data-taskid="' + taskid + '" ' +
-                    'data-status="' + status + '" ' +
-                    'data-bs-toggle="popover" ' +
-                    'data-bs-placement="top" ' +
-                    'data-bs-html="true" ' +
-                    'data-bs-trigger="click" ' +
-                    'data-bs-content="' + popovercontent.replace(/"/g, "&quot;") + '" ' +
-                    'title="Change Status">' +
+                    'data-status="' + status + '">' +
                     statuslabel + '</span>';
 
                 let row = '<tr>' +
@@ -394,15 +370,55 @@ let taskListController = () => {
                 viewTaskController(taskid, taskname, tasknotes, priority, createdts, duedate, status);
             });
 
-            let popoverelements = document.querySelectorAll('[data-bs-toggle="popover"]');
-            popoverelements.forEach( function(el) {
-                new bootstrap.Popover(el);
+            $(document).off('click', '.status-badge');
+            $(document).on('click', '.status-badge', function(e) {
+                e.stopPropagation();
+
+                $('.status-dropdown-menu').remove();
+
+                let taskid = $(this).data('taskid');
+                let currentstatus = $(this).data('status');
+                let offset = $(this).offset();
+                let height = $(this).outerHeight();
+
+                let menu = '<div class="status-dropdown-menu card shadow" ' +
+                    'style="position:fixed; ' +
+                    'top:' + (offset.top + height + 4) + 'px; ' +
+                    'left:' + offset.left + 'px; ' +
+                    'z-index:9999; ' +
+                    'min-width:150px; ' +
+                    'padding:4px 0;">' +
+                    '<div class="status-dropdown-item px-3 py-2" ' +
+                    'style="cursor:pointer; font-size:0.9em;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newstatus="pending">⏳ Pending</div>' +
+                    '<div class="status-dropdown-item px-3 py-2" ' +
+                    'style="cursor:pointer; font-size:0.9em;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newstatus="in-progress">🔄 In Progress</div>' +
+                    '<div class="status-dropdown-item px-3 py-2" ' +
+                    'style="cursor:pointer; font-size:0.9em;" ' +
+                    'data-taskid="' + taskid + '" ' +
+                    'data-newstatus="complete">✅ Complete</div>' +
+                    '</div>';
+
+                $('body').append(menu);
+
+                $('.status-dropdown-item').hover(
+                    function() { $(this).css('background-color', '#f8f9fa'); },
+                    function() { $(this).css('background-color', ''); }
+                );
             });
 
-            $(document).on('click', '.status-option', function() {
+            $(document).off('click', '.status-dropdown-item');
+            $(document).on('click', '.status-dropdown-item', function(e) {
+                e.stopPropagation();
+
                 let taskid = $(this).data('taskid');
                 let newstatus = $(this).data('newstatus');
                 let token = localStorage.getItem("token");
+
+                $('.status-dropdown-menu').remove();
 
                 if (newstatus == "complete") {
                     let confirmed = confirm("Mark this task as complete? It will be removed from your task board.");
@@ -422,19 +438,9 @@ let taskListController = () => {
                     "success": (results) => {
                         console.log(results);
 
-                        let popoverelement = document.getElementById('status-badge-' + taskid);
-                        if (popoverelement) {
-                            let popoverinstance = bootstrap.Popover.getInstance(popoverelement);
-                            if (popoverinstance) {
-                                popoverinstance.hide();
-                            }
-                        }
-
                         if (newstatus == "complete") {
-                            let row = $("#status-badge-" + taskid).closest('tr');
-                            row.fadeOut(300, function() {
+                            $("#status-badge-" + taskid).closest('tr').fadeOut(300, function() {
                                 $(this).remove();
-                                let remaining = $("#tasks_table_body tr").length;
                                 let total = parseInt($("#badge-total").html().replace(/[^0-9]/g, ''));
                                 let newtotal = total - 1;
                                 $("#badge-total").html("📋 " + newtotal + " Total");
@@ -465,16 +471,8 @@ let taskListController = () => {
                 });
             });
 
-            $(document).on('click', function(e) {
-                if (!$(e.target).hasClass('status-badge') && 
-                    !$(e.target).closest('.popover').length) {
-                    $('.status-badge').each( function() {
-                        let popoverinstance = bootstrap.Popover.getInstance(this);
-                        if (popoverinstance) {
-                            popoverinstance.hide();
-                        }
-                    });
-                }
+            $(document).on('click', function() {
+                $('.status-dropdown-menu').remove();
             });
         },
         "error": (data) => {
