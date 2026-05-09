@@ -1206,7 +1206,6 @@ let createTeamController = () => {
 
     let token = localStorage.getItem("token");
     let teamname = $("#teamname").val();
-    let teamdescription = $("#teamdescription").val();
 
     if (!token || teamname == "") {
         $('#createteam_message').html('Team name is required.');
@@ -1648,6 +1647,146 @@ if (localStorage.token){
                 $(this).show();
             }
         });
+    });
+
+    $('#link-teams').click( () => {
+        $(".content-wrapper").hide();
+        $("#div-teams").show();
+        $("#createteam_token").val(localStorage.getItem("token"));
+        teamsController();
+    });
+
+    $('#btnShowCreateTeam').click( () => {
+        $("#createteam_token").val(localStorage.getItem("token"));
+        $(".content-wrapper").hide();
+        $("#div-createteam").show();
+    });
+
+    $('#btnCreateTeam').click( () => {
+        createTeamController();
+    });
+
+    $('#btnCancelCreateTeam').click( () => {
+        $(".content-wrapper").hide();
+        $("#div-teams").show();
+    });
+
+    $('#btnCancelCreateTeam2').click( () => {
+        $(".content-wrapper").hide();
+        $("#div-teams").show();
+    });
+
+    $('#btnBackToTeams').click( () => {
+        $(".content-wrapper").hide();
+        $("#div-teams").show();
+        teamsController();
+    });
+
+    $('#btnShowAddTeamMember').click( () => {
+        let teamid = $("#current-teamid").val();
+        $("#addmember_token").val(localStorage.getItem("token"));
+        $("#addmember_teamid").val(teamid);
+        $(".content-wrapper").hide();
+        $("#div-addteammember").show();
+    });
+
+    $('#btnAddTeamMember').click( () => {
+        addTeamMemberController();
+    });
+
+    $('#btnCancelAddMember').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnCancelAddMember2').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnShowAddTeamTask').click( () => {
+        let teamid = $("#current-teamid").val();
+        $("#addteamtask_token").val(localStorage.getItem("token"));
+        $("#addteamtask_teamid").val(teamid);
+        $(".content-wrapper").hide();
+        $("#div-addteamtask").show();
+    });
+
+    $('#btnSaveTeamTask').click( () => {
+        saveTeamTaskController();
+    });
+
+    $('#btnCancelAddTeamTask').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnCancelAddTeamTask2').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnBackFromViewTeamTask').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnEditTeamTask').click( () => {
+        let taskid = $("#view_teamtask_id").val();
+        let taskname = $("#view_teamtask_name").html();
+        let tasknotes = $("#view_teamtask_notes").html();
+        $("#editteamtask_token").val(localStorage.getItem("token"));
+        $("#editteamtask_id").val(taskid);
+        $("#editteamtaskname").val(taskname);
+        $("#editteamtasknotes").val(tasknotes);
+        let teamid = $("#current-teamid").val();
+        teamMembersController(teamid);
+        $(".content-wrapper").hide();
+        $("#div-editteamtask").show();
+    });
+
+    $('#btnUpdateTeamTask').click( () => {
+        updateTeamTaskController();
+    });
+
+    $('#btnCancelEditTeamTask').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnCancelEditTeamTask2').click( () => {
+        let teamid = $("#current-teamid").val();
+        $(".content-wrapper").hide();
+        $("#div-teamdashboard").show();
+        teamTasksController(teamid);
+        teamMembersController(teamid);
+    });
+
+    $('#btnDeleteTeamTask').click( () => {
+        let taskname = $("#view_teamtask_name").html();
+        let confirmed = confirm("Delete team task: " + taskname + "? This cannot be undone.");
+        if (!confirmed) {
+            return;
+        }
+        deleteTeamTaskController();
     });
 
 }); /* end the document ready event*/
