@@ -1000,6 +1000,374 @@ let statsChartController = (totalcount, highcount, mediumcount, lowcount, comple
     });
 };
 
+let teamsController = () => {
+    $('#teams-message').html("");
+    $('#teams-message').removeClass();
+    $("#teams-list-container").html("");
+
+    let the_serialized_data = $("#form-tasks").serialize();
+    console.log(the_serialized_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teams",
+        "method": "GET",
+        "data": the_serialized_data,
+        "success": (results) => {
+            console.log(results);
+
+            if (!results || results.length == 0) {
+                $('#teams-message').html('You are not a member of any teams yet. Create one below!');
+                $('#teams-message').addClass("alert alert-info text-center");
+                return;
+            }
+
+            let html = "";
+            for (let i = 0; i < results.length; i++) {
+                let team = results[i];
+                let rolebadge = '<span class="badge ms-2" style="background-color:#6c757d; font-size:0.75em;">Member</span>';
+                if (team['role'] == 'owner') {
+                    rolebadge = '<span class="badge ms-2" style="background-color:#008080; font-size:0.75em;">Owner</span>';
+                }
+                html += '<div class="d-flex justify-content-between align-items-center p-3 mb-2" style="border:1px solid #e0e0e0; border-radius:8px; cursor:pointer;" id="team-item-' + team['teamid'] + '">';
+                html += '<div>';
+                html += '<strong>' + team['teamname'] + '</strong>' + rolebadge;
+                html += '<br><small style="color:#888;">' + team['description'] + '</small>';
+                html += '</div>';
+                html += '<i class="fa fa-chevron-right" style="color:#008080;"></i>';
+                html += '</div>';
+            }
+            $("#teams-list-container").html(html);
+
+            for (let i = 0; i < results.length; i++) {
+                let team = results[i];
+                $('#team-item-' + team['teamid']).click( function() {
+                    $("#current-teamid").val(team['teamid']);
+                    $("#current-team-owner").val(team['role']);
+                    $("#teamdashboard-title").html(team['teamname']);
+                    $("#teamdashboard-description").html(team['description']);
+                    if (team['role'] == 'owner') {
+                        $("#btnShowAddTeamTask").show();
+                        $("#btnShowAddTeamMember").show();
+                    } else {
+                        $("#btnShowAddTeamTask").hide();
+                        $("#btnShowAddTeamMember").hide();
+                    }
+                    $(".content-wrapper").hide();
+                    $("#div-teamdashboard").show();
+                    teamTasksController(team['teamid']);
+                    teamMembersController(team['teamid']);
+                });
+            }
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#teams-message').html("Failed to load teams.");
+            $('#teams-message').addClass("alert alert-danger");
+        }
+    });
+};
+
+let teamTasksController = (teamid) => {
+    $('#teamtasks-message').html("");
+    $('#teamtasks-message').removeClass();
+    $("#teamtasks-container").html("");
+
+    let token = localStorage.getItem("token");
+    let the_data = "token=" + encodeURIComponent(token) + "&teamid=" + encodeURIComponent(teamid);
+    console.log(the_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teamtasks",
+        "method": "GET",
+        "data": the_data,
+        "success": (results) => {
+            console.log(results);
+
+            if (!results || results.length == 0) {
+                $('#teamtasks-message').html('No tasks yet. Add one above!');
+                $('#teamtasks-message').addClass("alert alert-info text-center");
+                return;
+            }
+
+            let table = '<table class="table table-striped table-bordered" style="font-size:0.9em;">';
+            table += '<thead><tr>';
+            table += '<th>Task</th>';
+            table += '<th>Assigned To</th>';
+            table += '<th>Priority</th>';
+            table += '<th>Status</th>';
+            table += '<th>Due</th>';
+            table += '</tr></thead>';
+            table += '<tbody>';
+
+            for (let i = 0; i < results.length; i++) {
+                let task = results[i];
+                let assignedname = "Unassigned";
+                if (task['fname'] != null) {
+                    assignedname = task['fname'] + " " + task['lname'];
+                }
+                let prioritybadge = '<span class="badge" style="background-color:#ffc107; color:#000; font-size:0.7em;">🟡 Med</span>';
+                if (task['priority'] == 'high') {
+                    prioritybadge = '<span class="badge" style="background-color:#dc3545; font-size:0.7em;">🔴 High</span>';
+                }
+                if (task['priority'] == 'low') {
+                    prioritybadge = '<span class="badge" style="background-color:#28a745; font-size:0.7em;">🟢 Low</span>';
+                }
+                let statusbadge = '<span class="badge" style="background-color:#6c757d; font-size:0.7em;">⏳ Pending</span>';
+                if (task['status'] == 'in-progress') {
+                    statusbadge = '<span class="badge" style="background-color:#17a2b8; font-size:0.7em;">🔄 In Progress</span>';
+                }
+                if (task['status'] == 'complete') {
+                    statusbadge = '<span class="badge" style="background-color:#28a745; font-size:0.7em;">✅ Complete</span>';
+                }
+                let duedisplay = "None";
+                if (task['duedate'] != null && task['duedate'] != "") {
+                    let duedateobj = new Date(task['duedate']);
+                    let dueoptions = { month: 'short', day: 'numeric' };
+                    duedisplay = duedateobj.toLocaleDateString('en-US', dueoptions);
+                }
+                table += '<tr class="teamtask-row" style="cursor:pointer;" data-taskid="' + task['taskid'] + '">';
+                table += '<td>' + task['taskname'] + '</td>';
+                table += '<td>' + assignedname + '</td>';
+                table += '<td>' + prioritybadge + '</td>';
+                table += '<td>' + statusbadge + '</td>';
+                table += '<td>' + duedisplay + '</td>';
+                table += '</tr>';
+            }
+            table += '</tbody></table>';
+            $("#teamtasks-container").html(table);
+
+            $('.teamtask-row').click( function() {
+                let taskid = $(this).data('taskid');
+                let taskname = $(this).find('td').eq(0).html();
+                let assignedto = $(this).find('td').eq(1).html();
+                let duedate = $(this).find('td').eq(4).html();
+                $("#view_teamtask_id").val(taskid);
+                $("#view_teamtask_name").html(taskname);
+                $("#view_teamtask_assignedto").html(assignedto);
+                $("#view_teamtask_duedate").html(duedate);
+                $(".content-wrapper").hide();
+                $("#div-viewteamtask").show();
+            });
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#teamtasks-message').html("Failed to load team tasks.");
+            $('#teamtasks-message').addClass("alert alert-danger");
+        }
+    });
+};
+
+let teamMembersController = (teamid) => {
+    $("#teammembers-container").html("");
+
+    let token = localStorage.getItem("token");
+    let the_data = "token=" + encodeURIComponent(token) + "&teamid=" + encodeURIComponent(teamid);
+    console.log(the_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teammembers",
+        "method": "GET",
+        "data": the_data,
+        "success": (results) => {
+            console.log(results);
+
+            let html = "";
+            for (let i = 0; i < results.length; i++) {
+                let member = results[i];
+                let rolebadge = '<span class="badge ms-1" style="background-color:#6c757d; font-size:0.7em;">Member</span>';
+                if (member['role'] == 'owner') {
+                    rolebadge = '<span class="badge ms-1" style="background-color:#008080; font-size:0.7em;">Owner</span>';
+                }
+                html += '<div class="d-flex align-items-center mb-2">';
+                html += '<i class="fa fa-user-circle me-2" style="color:#008080; font-size:1.2em;"></i>';
+                html += '<span>' + member['fname'] + ' ' + member['lname'] + rolebadge + '</span>';
+                html += '</div>';
+            }
+            $("#teammembers-container").html(html);
+
+            $("#teamtaskassignedto").html('<option value="">Unassigned</option>');
+            $("#editteamtaskassignedto").html('<option value="">Unassigned</option>');
+            for (let i = 0; i < results.length; i++) {
+                let member = results[i];
+                let option = '<option value="' + member['userid'] + '">' + member['fname'] + ' ' + member['lname'] + '</option>';
+                $("#teamtaskassignedto").append(option);
+                $("#editteamtaskassignedto").append(option);
+            }
+        },
+        "error": (data) => {
+            console.log(data);
+        }
+    });
+};
+
+let createTeamController = () => {
+    $('#createteam_message').html("");
+    $('#createteam_message').removeClass();
+
+    let token = localStorage.getItem("token");
+    let teamname = $("#teamname").val();
+    let teamdescription = $("#teamdescription").val();
+
+    if (!token || teamname == "") {
+        $('#createteam_message').html('Team name is required.');
+        $('#createteam_message').addClass("alert alert-danger text-center");
+        return;
+    }
+
+    let the_serialized_data = $("#form-createteam").serialize();
+    console.log(the_serialized_data);
+
+    $.ajax({
+        "url": endpoint01 + "/team",
+        "method": "POST",
+        "data": the_serialized_data,
+        "success": (results) => {
+            console.log(results);
+            $("#teamname").val("");
+            $("#teamdescription").val("");
+            $(".content-wrapper").hide();
+            $("#div-teams").show();
+            teamsController();
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#createteam_message').html("Failed to create team.");
+            $('#createteam_message').addClass("alert alert-danger text-center");
+        }
+    });
+};
+
+let addTeamMemberController = () => {
+    $('#addmember_message').html("");
+    $('#addmember_message').removeClass();
+
+    let username = $("#addmember_username").val();
+    if (username == "") {
+        $('#addmember_message').html('Username is required.');
+        $('#addmember_message').addClass("alert alert-danger text-center");
+        return;
+    }
+
+    let the_serialized_data = $("#form-addteammember").serialize();
+    console.log(the_serialized_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teammember",
+        "method": "POST",
+        "data": the_serialized_data,
+        "success": (results) => {
+            console.log(results);
+            $("#addmember_username").val("");
+            $('#addmember_message').html("Member added successfully!");
+            $('#addmember_message').addClass("alert alert-success text-center");
+            let teamid = $("#current-teamid").val();
+            teamMembersController(teamid);
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#addmember_message').html("Failed to add member. Check the username and try again.");
+            $('#addmember_message').addClass("alert alert-danger text-center");
+        }
+    });
+};
+
+let saveTeamTaskController = () => {
+    $('#addteamtask_message').html("");
+    $('#addteamtask_message').removeClass();
+
+    let taskname = $("#teamtaskname").val();
+    if (taskname == "") {
+        $('#addteamtask_message').html('Task name is required.');
+        $('#addteamtask_message').addClass("alert alert-danger text-center");
+        return;
+    }
+
+    let the_serialized_data = $("#form-addteamtask").serialize();
+    console.log(the_serialized_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teamtask",
+        "method": "POST",
+        "data": the_serialized_data,
+        "success": (results) => {
+            console.log(results);
+            $("#teamtaskname").val("");
+            $("#teamtasknotes").val("");
+            let teamid = $("#current-teamid").val();
+            $(".content-wrapper").hide();
+            $("#div-teamdashboard").show();
+            teamTasksController(teamid);
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#addteamtask_message').html("Failed to save team task.");
+            $('#addteamtask_message').addClass("alert alert-danger text-center");
+        }
+    });
+};
+
+let updateTeamTaskController = () => {
+    $('#editteamtask_message').html("");
+    $('#editteamtask_message').removeClass();
+
+    let taskname = $("#editteamtaskname").val();
+    if (taskname == "") {
+        $('#editteamtask_message').html('Task name is required.');
+        $('#editteamtask_message').addClass("alert alert-danger text-center");
+        return;
+    }
+
+    let the_serialized_data = $("#form-editteamtask").serialize();
+    console.log(the_serialized_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teamtask",
+        "method": "PUT",
+        "data": the_serialized_data,
+        "success": (results) => {
+            console.log(results);
+            let teamid = $("#current-teamid").val();
+            $(".content-wrapper").hide();
+            $("#div-teamdashboard").show();
+            teamTasksController(teamid);
+        },
+        "error": (data) => {
+            console.log(data);
+            $('#editteamtask_message').html("Failed to update team task.");
+            $('#editteamtask_message').addClass("alert alert-danger text-center");
+        }
+    });
+};
+
+let deleteTeamTaskController = () => {
+    let taskid = $("#view_teamtask_id").val();
+    let token = localStorage.getItem("token");
+
+    if (!taskid || !token) {
+        return;
+    }
+
+    let the_data = "token=" + encodeURIComponent(token) +
+        "&taskid=" + encodeURIComponent(taskid);
+    console.log(the_data);
+
+    $.ajax({
+        "url": endpoint01 + "/teamtask",
+        "method": "DELETE",
+        "data": the_data,
+        "success": (results) => {
+            console.log(results);
+            let teamid = $("#current-teamid").val();
+            $(".content-wrapper").hide();
+            $("#div-teamdashboard").show();
+            teamTasksController(teamid);
+        },
+        "error": (data) => {
+            console.log(data);
+        }
+    });
+};
+
 //document ready section
 $(document).ready( () => {
 
