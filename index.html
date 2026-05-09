@@ -267,32 +267,32 @@
                 <input type="hidden" name="token" id="tasks_token" value="">
             </form>
 
-            <div class="table-responsive" style="width:50%;">
-                <table class="table table-striped table-bordered">
-                    <thead id="table_header">
-                        <tr>
-                            <th scope="col" class="text-center">Task</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tasks_table_body">
-                        <!-- rows added here by JS later -->
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td class="text-center">
-                                <input type="button" value="+ Add Task" 
-                                       id="btnAddTask" 
-                                       class="btn btn-primary btn-sm"
-                                       style="width:50%;">
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <div class="row mt-4">
+            <div class="row">
                 <div class="col-12 col-md-6">
-                    <div id="div-stats">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead id="table_header">
+                                <tr>
+                                    <th scope="col" class="text-center">Task</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tasks_table_body">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-center">
+                                        <input type="button" value="+ Add Task"
+                                               id="btnAddTask"
+                                               class="btn btn-primary btn-sm"
+                                               style="width:50%;">
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div id="div-stats" class="mb-4">
                         <h5 style="font-weight:600; color:#555;
                                    margin-bottom:12px;">
                             <i class="fa fa-chart-bar"></i> Task Overview
@@ -302,8 +302,6 @@
                             <canvas id="statsChart" height="160"></canvas>
                         </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-6">
                     <div id="div-completed">
                         <h5 style="font-weight:600; color:#555;
                                    margin-bottom:12px;">
