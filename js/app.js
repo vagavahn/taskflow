@@ -7,6 +7,26 @@ let endpoint01 = "https://aa1qqavwd8.execute-api.us-east-1.amazonaws.com/default
 
 /* SUPPORTING FUNCTIONS */
 
+let showToast = (message, type) => {
+    let toast = document.getElementById('app-toast');
+    let toastmessage = document.getElementById('toast-message');
+    toastmessage.innerHTML = message;
+    toast.className = 'toast align-items-center border-0 text-white';
+    if (type == 'success') {
+        toast.classList.add('bg-success');
+    }
+    if (type == 'error') {
+        toast.classList.add('bg-danger');
+    }
+    if (type == 'info') {
+        toast.classList.add('bg-primary');
+    }
+    let bstoast = new bootstrap.Toast(toast, {
+        delay: 3000
+    });
+    bstoast.show();
+};
+
 let loginController = () => {
     // Clear any previous messages
     $('#login_message').html("");
@@ -114,11 +134,11 @@ let saveTaskController = () => {
             $(".content-wrapper").hide();
             $("#div-tasks").show();
             taskListController();
+            showToast("Task saved successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#addtask_message').html("Failed to save task.");
-            $('#addtask_message').addClass("alert alert-danger text-center");
+            showToast("Failed to save task.", "error");
         }
     });
 
@@ -207,11 +227,11 @@ let deleteTaskController = () => {
             $(".content-wrapper").hide();
             $("#div-tasks").show();
             taskListController();
+            showToast("Task deleted.", "info");
         },
         "error": (data) => {
             console.log(data);
-            $('#tasks_message').html("Unexpected Error");
-            $('#tasks_message').addClass("alert alert-danger");
+            showToast("Something went wrong. Please try again.", "error");
         }
     });
 };
@@ -528,8 +548,7 @@ let taskListController = () => {
                     },
                     "error": (data) => {
                         console.log(data);
-                        $('#tasks_message').html("Failed to update status.");
-                        $('#tasks_message').addClass("alert alert-danger");
+                        showToast("Failed to update status.", "error");
                     }
                 });
             });
@@ -637,8 +656,7 @@ let taskListController = () => {
                     },
                     "error": (data) => {
                         console.log(data);
-                        $('#tasks_message').html("Failed to update priority.");
-                        $('#tasks_message').addClass("alert alert-danger");
+                        showToast("Failed to update priority.", "error");
                     }
                 });
             });
@@ -650,8 +668,7 @@ let taskListController = () => {
         },
         "error": (data) => {
             console.log(data);
-            $('#tasks_message').html("Unexpected Error");
-            $('#tasks_message').addClass("alert alert-danger");
+            showToast("Something went wrong. Please try again.", "error");
         }
     });
 };
@@ -684,11 +701,11 @@ let editTaskController = () => {
             $(".content-wrapper").hide();
             $("#div-tasks").show();
             taskListController();
+            showToast("Task updated successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#edittask_message').html("Failed to update task.");
-            $('#edittask_message').addClass("alert alert-danger text-center");
+            showToast("Failed to update task.", "error");
         }
     });
 
@@ -795,8 +812,7 @@ let adminReportController = () => {
         },
         "error": (data) => {
             console.log(data);
-            $('#adminreport_message').html("Unexpected Error");
-            $('#adminreport_message').addClass("alert alert-danger");
+            showToast("Failed to load admin report.", "error");
         }
     });
 };
@@ -833,11 +849,11 @@ let editProfileController = () => {
             $("#dropdown-username").html("@" + username);
             $('#editprofile_message').html("Profile updated successfully!");
             $('#editprofile_message').addClass("alert alert-success text-center");
+            showToast("Profile updated successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#editprofile_message').html("Failed to update profile.");
-            $('#editprofile_message').addClass("alert alert-danger text-center");
+            showToast("Failed to update profile.", "error");
         }
     });
 };
@@ -874,14 +890,14 @@ let changePasswordController = () => {
             console.log(results);
             $('#changepassword_message').html("Password updated successfully!");
             $('#changepassword_message').addClass("alert alert-success text-center");
+            showToast("Password updated successfully!", "success");
             $("#current_password").val("");
             $("#new_password").val("");
             $("#confirm_password").val("");
         },
         "error": (data) => {
             console.log(data);
-            $('#changepassword_message').html("Failed to update password.");
-            $('#changepassword_message').addClass("alert alert-danger text-center");
+            showToast("Failed to update password.", "error");
         }
     });
 };
@@ -1061,8 +1077,7 @@ let teamsController = () => {
         },
         "error": (data) => {
             console.log(data);
-            $('#teams-message').html("Failed to load teams.");
-            $('#teams-message').addClass("alert alert-danger");
+            showToast("Failed to load teams.", "error");
         }
     });
 };
@@ -1227,11 +1242,11 @@ let createTeamController = () => {
             $(".content-wrapper").hide();
             $("#div-teams").show();
             teamsController();
+            showToast("Team created successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#createteam_message').html("Failed to create team.");
-            $('#createteam_message').addClass("alert alert-danger text-center");
+            showToast("Failed to create team.", "error");
         }
     });
 };
@@ -1261,11 +1276,11 @@ let addTeamMemberController = () => {
             $('#addmember_message').addClass("alert alert-success text-center");
             let teamid = $("#current-teamid").val();
             teamMembersController(teamid);
+            showToast("Member added successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#addmember_message').html("Failed to add member. Check the username and try again.");
-            $('#addmember_message').addClass("alert alert-danger text-center");
+            showToast("Failed to add member. Check the username and try again.", "error");
         }
     });
 };
@@ -1296,11 +1311,11 @@ let saveTeamTaskController = () => {
             $(".content-wrapper").hide();
             $("#div-teamdashboard").show();
             teamTasksController(teamid);
+            showToast("Team task saved successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#addteamtask_message').html("Failed to save team task.");
-            $('#addteamtask_message').addClass("alert alert-danger text-center");
+            showToast("Failed to save team task.", "error");
         }
     });
 };
@@ -1329,11 +1344,11 @@ let updateTeamTaskController = () => {
             $(".content-wrapper").hide();
             $("#div-teamdashboard").show();
             teamTasksController(teamid);
+            showToast("Team task updated successfully!", "success");
         },
         "error": (data) => {
             console.log(data);
-            $('#editteamtask_message').html("Failed to update team task.");
-            $('#editteamtask_message').addClass("alert alert-danger text-center");
+            showToast("Failed to update team task.", "error");
         }
     });
 };
@@ -1360,6 +1375,7 @@ let deleteTeamTaskController = () => {
             $(".content-wrapper").hide();
             $("#div-teamdashboard").show();
             teamTasksController(teamid);
+            showToast("Team task deleted.", "info");
         },
         "error": (data) => {
             console.log(data);
