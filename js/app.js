@@ -2,8 +2,6 @@
 
 /* SOME CONSTANTS */
 let endpoint01 = "https://aa1qqavwd8.execute-api.us-east-1.amazonaws.com/default/project5karabassis";
-//let endpoint02 = "https://si4psjztm1.execute-api.us-east-2.amazonaws.com/default/project3din";
-//let endpoint01 = "https://30tmwogma6.execute-api.us-east-1.amazonaws.com/default/project3shafer-solution";
 
 /* SUPPORTING FUNCTIONS */
 
